@@ -92,5 +92,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shell.Interop\Shell.Interop.csproj">
+      <Project>{1a7318f0-8180-49b3-ac2c-b04f9ebc58ea}</Project>
+      <Name>Shell.Interop</Name>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
