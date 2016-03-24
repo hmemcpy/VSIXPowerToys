@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable CheckNamespace
 // These types don't have a publicly available PIA, so I need to make one myself
 
-[assembly: PrimaryInteropAssembly(12, 0)]
+[assembly: PrimaryInteropAssembly(14, 0)]
+
 namespace Microsoft.Internal.VisualStudio.Shell.Interop
 {
     [Guid("753E55C6-E779-4A7A-BCD1-FD87181D52C0"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
