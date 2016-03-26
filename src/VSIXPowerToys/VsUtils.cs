@@ -17,10 +17,10 @@ namespace VSIXPowerToys
             return new DirectoryInfo(Path.Combine(localAppData, "Microsoft", "VisualStudio"));
         }
 
-        public static IEnumerable<VsHive> GetAllHives(string vsVersion)
+        public static IEnumerable<VsHive> GetAllHives(VsVersion vsVersion)
         {
-            return VsLocalDirectory.EnumerateDirectories().Where(d => d.Name.StartsWith(vsVersion))
-                .Select(d => new VsHive(vsVersion, d.Name.Substring(vsVersion.Length)));
+            return VsLocalDirectory.EnumerateDirectories().Where(d => d.Name.StartsWith(vsVersion.Version))
+                .Select(d => new VsHive(vsVersion, d.Name.Substring(vsVersion.Version.Length)));
         }
 
         public static IEnumerable<VsVersion> GetInstalledVisualStudioVersions()
@@ -64,11 +64,11 @@ namespace VSIXPowerToys
 
     public class VsHive
     {
-        public string VsVersion { get; }
+        public VsVersion VsVersion { get; }
         public string RootSuffix { get; }
         public bool IsMainHive { get; }
 
-        public VsHive(string vsVersion, string rootSuffix)
+        public VsHive(VsVersion vsVersion, string rootSuffix)
         {
             VsVersion = vsVersion;
             RootSuffix = rootSuffix;
@@ -86,6 +86,6 @@ namespace VSIXPowerToys
             }
         }
 
-        public override string ToString() => $"{VsVersion}{RootSuffix}";
+        public override string ToString() => $"{VsVersion.Version}{RootSuffix}";
     }
 }

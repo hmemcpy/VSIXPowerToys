@@ -48,7 +48,6 @@ namespace VSIXPowerToys
             CreateInstallItems(install);
             menuStrip.Items.Add(install);
 
-
             var topLevel = new ToolStripMenuItem("VSIX PowerToys");
 
             var copyVsix = new ToolStripMenuItem("Copy VSIX ID to Clipboard");
@@ -63,17 +62,18 @@ namespace VSIXPowerToys
         {
             Debug.Assert(vsix != null);
 
-            root.DropDownItems.Add(new ToolStripMenuItem("Custom..."));
+            //var value = new ToolStripMenuItem("Custom...");
+            //root.DropDownItems.Add(value);
 
             var vsVersions = VsUtils.GetInstalledVisualStudioVersions().Where(IsSupportedByTarget).ToList();
             foreach (var vsVersion in vsVersions)
             {
-                if (!(root.DropDownItems[root.DropDownItems.Count - 1] is ToolStripSeparator))
+                if (root.HasDropDownItems && !(root.DropDownItems[root.DropDownItems.Count - 1] is ToolStripSeparator))
                 {
                     root.DropDownItems.Add(new ToolStripSeparator());
                 }
 
-                var hives = VsUtils.GetAllHives(vsVersion.Version).Where(hive => hive.Exists());
+                var hives = VsUtils.GetAllHives(vsVersion).Where(hive => hive.Exists());
 
                 foreach (var hive in hives)
                 {
@@ -85,6 +85,17 @@ namespace VSIXPowerToys
 
         private void InstallVsix(VsVersion vsVersion, VsHive hive)
         {
+            if (vsix.Header.AllUsers)
+            {
+                if (MessageBox.Show("This extension is configured to be installed for all users, " +
+                                    "and it can only be installed in the per-machine location (Common7\\IDE\\Extensions).\n\n" +
+                                    "Proceed with installation?", "VSIX PowerToys", MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning) != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+
             var cursor = Cursor.Current;
             try
             {
@@ -118,6 +129,8 @@ namespace VSIXPowerToys
 
         private IInstalledExtension PerformInstallation(VsVersion vsVersion, VsHive hive)
         {
+            Debug.Assert(vsix != null);
+
             IInstalledExtension extension;
 
             using (var settingsManager = ExternalSettingsManager.CreateForApplication(vsVersion.DevEnvPath, hive.RootSuffix))
@@ -132,6 +145,7 @@ namespace VSIXPowerToys
                     try
                     {
                         extensionManager.Uninstall(extension);
+                        extensionManager.CommitExternalUninstall(extension);
                     }
                     catch (Exception ex)
                     {
