@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.Interop", "Shell.Inte
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VSIXPowerToys.Setup", "VSIXPowerToys.Setup\VSIXPowerToys.Setup.vdproj", "{99983280-380C-42CD-8A03-65474AEBE8D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostProcess", "HostProcess\HostProcess.csproj", "{43E348CA-653A-4FD1-8215-0FE9BD3BDD25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{1A7318F0-8180-49B3-AC2C-B04F9EBC58EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99983280-380C-42CD-8A03-65474AEBE8D5}.Debug|Any CPU.ActiveCfg = Debug
 		{99983280-380C-42CD-8A03-65474AEBE8D5}.Release|Any CPU.ActiveCfg = Release
+		{43E348CA-653A-4FD1-8215-0FE9BD3BDD25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43E348CA-653A-4FD1-8215-0FE9BD3BDD25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43E348CA-653A-4FD1-8215-0FE9BD3BDD25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43E348CA-653A-4FD1-8215-0FE9BD3BDD25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

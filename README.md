@@ -1,13 +1,33 @@
+![](https://raw.githubusercontent.com/hmemcpy/VSIXPowerToys/master/icon/vsix-pt.png)
 # VSIXPowerToys
 Windows Shell Extensions (and other utilities) to work with Visual Studio Extensions (vsix) files.
 
-### Features
+## Features
 
-**Copy VSIX ID to Clipboard**  
-![](http://i.imgur.com/5L4eD1L.png)
+### Install into specific Hive
 
-More coming soon...
+Installs the VSIX into a specified hive. If the VSIX is configured to be installed for all users, it will be installed into `Common7\IDE\Extensions` instead.
 
-### Acknowledgments
+![image](https://cloud.githubusercontent.com/assets/601206/14064284/794cc4c0-f406-11e5-8b2e-697dd99f17e3.png)
+ 
 
-VSIXPowerToys is using the excellent [SharpShell](https://github.com/dwmkerr/sharpshell) library by [Dave Kerr](https://github.com/dwmkerr).
+### Copy VSIX ID to Clipboard  
+
+Copies the VSIX manifest ID value to the clipboard. 
+
+![image](https://cloud.githubusercontent.com/assets/601206/14064257/eedbcd28-f404-11e5-9e22-d21463cbab8d.png)
+
+## Installation
+
+Grab the latest installer from the [Releases](../../releases) page.
+
+Note: Visual Studio 2015 [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) or better is required to be installed on the machine.
+
+## Acknowledgments
+
+VSIX PowerToys is built using the excellent [SharpShell](https://github.com/dwmkerr/sharpshell) library by [Dave Kerr](https://github.com/dwmkerr).
+
+## Bugs? Ideas? Comments?
+
+Please feel free to [report them](../../issues)!
+

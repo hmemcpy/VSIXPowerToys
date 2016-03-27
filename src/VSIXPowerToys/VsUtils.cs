@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
 namespace VSIXPowerToys
@@ -41,6 +43,12 @@ namespace VSIXPowerToys
                     }
                 }
             }
+        }
+
+        public static void CheckLastWin32Error()
+        {
+            var error = Marshal.GetLastWin32Error();
+            if (error != 0) throw new Win32Exception(error);
         }
 
         private static bool IsVsVersion(string arg)

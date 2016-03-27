@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.ExtensionManager;
-using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell;
 using SharpShell.Attributes;
+using SharpShell.Diagnostics;
 using SharpShell.SharpContextMenu;
 
 namespace VSIXPowerToys
@@ -18,7 +18,6 @@ namespace VSIXPowerToys
     public class VsixPowerToys : SharpContextMenu
     {
         private IInstallableExtension vsix;
-        private string identifier;
 
         protected override bool CanShowMenu()
         {
@@ -30,7 +29,6 @@ namespace VSIXPowerToys
             try
             {
                 vsix = ExtensionManagerService.CreateInstallableExtension(paths[0]);
-                identifier = vsix.Header.Identifier;
             }
             catch (Exception ex)
             {
@@ -60,8 +58,6 @@ namespace VSIXPowerToys
 
         private void CreateInstallItems(ToolStripMenuItem root)
         {
-            Debug.Assert(vsix != null);
-
             //var value = new ToolStripMenuItem("Custom...");
             //root.DropDownItems.Add(value);
 
@@ -77,18 +73,23 @@ namespace VSIXPowerToys
 
                 foreach (var hive in hives)
                 {
-                    var item = new ToolStripMenuItem(hive.ToString(), null, (sender, args) => InstallVsix(vsVersion, hive));
+                    var item = new ToolStripMenuItem(hive.ToString(), null, (sender, args) => InstallVsix(hive));
                     root.DropDownItems.Add(item);
                 }
             }
+
+            if (!root.HasDropDownItems)
+            {
+                root.DropDownItems.Add(new ToolStripMenuItem("(No compatible Visual Studio editions found)") { Enabled = false });
+            }
         }
 
-        private void InstallVsix(VsVersion vsVersion, VsHive hive)
+        private void InstallVsix(VsHive hive)
         {
-            if (vsix.Header.AllUsers)
+            if (vsix.Header.AllUsers && !hive.IsMainHive)
             {
                 if (MessageBox.Show("This extension is configured to be installed for all users, " +
-                                    "and it can only be installed in the per-machine location (Common7\\IDE\\Extensions).\n\n" +
+                                    $"and will be installed in the per-machine location (Common7\\IDE\\Extensions) instead of {hive}.\n\n" +
                                     "Proceed with installation?", "VSIX PowerToys", MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Warning) != DialogResult.OK)
                 {
@@ -96,18 +97,11 @@ namespace VSIXPowerToys
                 }
             }
 
-            var cursor = Cursor.Current;
+            SystemCursor.SetSystemCursor(Cursors.WaitCursor);
+            bool result = false;
             try
             {
-                Cursor.Current = Cursors.WaitCursor;
-                var extension = PerformInstallation(vsVersion, hive);
-                if (extension != null)
-                {
-                    MessageBox.Show($"Installation of '{extension.Header.Name}' into '{hive}' was successful!",
-                        "VSIX PowerToys",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
+                result = PerformInstallation(hive);
             }
             catch (Exception ex)
             {
@@ -116,7 +110,71 @@ namespace VSIXPowerToys
             }
             finally
             {
-                Cursor.Current = cursor;
+                SystemCursor.RestoreSystemCursor();
+            }
+
+            if (result)
+            {
+                MessageBox.Show($"Installation of '{vsix.Header.Name}' into '{hive}' was successful!",
+                    "VSIX PowerToys",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show($"Installation of '{vsix.Header.Name}' into '{hive}' was unsuccessful.\n\n" +
+                                "Please check the log file at %TEMP%\\VSIXPowerToys.log",
+                    "VSIX PowerToys",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+
+        private bool PerformInstallation(VsHive hive)
+        {
+            var codebase = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            var hostProcess = Path.Combine(Path.GetDirectoryName(codebase), "HostProcess.exe");
+            var arguments = $"\"{vsix.PackagePath}\" \"{hive.VsVersion.DevEnvPath}\" {hive.RootSuffix}";
+            Log($"Executing '{hostProcess} {arguments}'");
+
+            var p = new Process
+            {
+                StartInfo =
+                {
+                    FileName = hostProcess,
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                }
+            };
+            p.OutputDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrWhiteSpace(args.Data)) Log(args.Data);
+            };
+            p.ErrorDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrWhiteSpace(args.Data)) LogError(args.Data);
+            };
+
+            try
+            {
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
+                p.WaitForExit();
+                return p.ExitCode == 0;
+            }
+            catch (Exception ex)
+            {
+                LogError($"An error ocurred while executing HostProcess with arguments '{p.StartInfo.Arguments}'", ex);
+                return false;
+            }
+            finally
+            {
+                p.Dispose();
             }
         }
 
@@ -127,64 +185,9 @@ namespace VSIXPowerToys
                     .Any(target => target.VersionRange.Contains(Version.Parse(vsVersion.Version)));
         }
 
-        private IInstalledExtension PerformInstallation(VsVersion vsVersion, VsHive hive)
-        {
-            Debug.Assert(vsix != null);
-
-            IInstalledExtension extension;
-
-            using (var settingsManager = ExternalSettingsManager.CreateForApplication(vsVersion.DevEnvPath, hive.RootSuffix))
-            {
-                Log($"Preparing to install '{vsix.Header.Name}' with identifier '{identifier}' into '{hive}'");
-
-                var extensionManager = new ExtensionManagerService(settingsManager);
-                
-                if (extensionManager.TryGetInstalledExtension(identifier, out extension))
-                {
-                    Log($"Extension '{extension.Header.Name}' was already installed. Uninstalling...");
-                    try
-                    {
-                        extensionManager.Uninstall(extension);
-                        extensionManager.CommitExternalUninstall(extension);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogError($"An error ocurred while trying to uninstall '{extension.Header.Name}'. Rolling back...", ex);
-                        RevertUninstall(extensionManager, extension);
-                        throw;
-                    }
-                }
-                try
-                {
-                    Log($"Starting installation of '{vsix.Header.Name}'");
-                    extensionManager.Install(vsix, perMachine: false);
-                    extension = extensionManager.GetInstalledExtension(vsix.Header.Identifier);
-                    Log($"Installation of '{extension.Header.Name}' into '{hive}' completed successfully.");
-                }
-                catch (Exception ex)
-                {
-                    LogError($"An error ocurred while trying to install '{vsix.Header.Name}'. Rolling back...", ex);
-                    RevertUninstall(extensionManager, extension);
-                    throw;
-                }
-            }
-
-            return extension;
-        }
-
-        private void RevertUninstall(ExtensionManagerService extensionManager, IInstalledExtension oldExtension)
-        {
-            if (oldExtension == null || extensionManager.IsInstalled((IExtension)oldExtension))
-                return;
-            Log($"Reverting uninstall of '{oldExtension.Header.Name}'...");
-            extensionManager.RevertUninstall(oldExtension);
-        }
-
         private void CopyVsixIdToClipboard()
         {
-            Debug.Assert(vsix != null);
-
-            Clipboard.SetText(identifier);
+            Clipboard.SetText(vsix.Header.Identifier);
         }
     }
 }
