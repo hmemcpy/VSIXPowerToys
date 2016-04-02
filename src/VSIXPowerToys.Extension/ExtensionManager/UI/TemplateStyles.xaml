@@ -1,0 +1,128 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Microsoft.VisualStudio.ExtensionsExplorer.UI;assembly=Microsoft.VisualStudio.ExtensionsExplorer.UI"
+                    xmlns:shared="clr-namespace:Microsoft.VisualStudio.ExtensionsExplorer.UI;assembly=Microsoft.VisualStudio.ExtensionsExplorer.UI"
+                    xmlns:ui="clr-namespace:Microsoft.VisualStudio.ExtensionManager.UI;assembly=Microsoft.VisualStudio.ExtensionManager.Implementation">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CommonStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <Style x:Key="TileTemplateGridStyle" x:Uid="Style_1" TargetType="{x:Type Grid}">
+        <Setter x:Uid="Setter_2" Property="Margin" Value="0,0,-10,0" />
+        <Setter x:Uid="Setter_28" Property="MinHeight" Value="62" />
+    </Style>
+    <Style x:Key="TileImageStyle" x:Uid="Style_10" TargetType="{x:Type Image}">
+        <Setter x:Uid="Setter_30" Property="Margin" Value="0,4,4,4" />
+        <Setter x:Uid="Setter_31" Property="Height" Value="32" />
+        <Setter x:Uid="Setter_32" Property="Width" Value="32" />
+        <Setter x:Uid="Setter_33" Property="VerticalAlignment" Value="Top" />
+        <Setter x:Uid="Setter_34" Property="StretchDirection" Value="DownOnly" />
+        <Setter x:Uid="Setter_35" Property="Stretch" Value="Uniform" />
+    </Style>
+    <FontSizeConverter x:Key="FontSizeConverter" x:Uid="FontSizeConverter_1" />
+    <Style x:Key="TileTitleTextBoxStyle" x:Uid="Style_11" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_36" Property="ToolTipService.ShowOnDisabled" Value="true" />
+        <Setter x:Uid="Setter_37" Property="TextBlock.FontWeight" Value="Bold" />
+        <Setter x:Uid="Setter_38" Property="TextBlock.FontSize"
+                Value="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource FontSizeConverter}, ConverterParameter=2.0}" />
+        <Setter x:Uid="Setter_39" Property="TextBlock.TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+    <Style x:Key="TileDescriptionTextBoxStyle" x:Uid="Style_12" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_40" Property="ToolTipService.ShowOnDisabled" Value="true" />
+        <Setter x:Uid="Setter_41" Property="FrameworkElement.MaxHeight" Value="44" />
+        <Setter x:Uid="Setter_42" Property="TextBlock.TextWrapping" Value="Wrap" />
+        <Setter x:Uid="Setter_43" Property="TextBlock.TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+    <Style x:Key="TileInstalledByTextBoxStyle" x:Uid="Style_30" TargetType="{x:Type ui:TextBlockControl}"
+           BasedOn="{StaticResource TileDescriptionTextBoxStyle}">
+        <Setter x:Uid="Setter_60" Property="TextBlock.FontWeight" Value="Bold" />
+    </Style>
+    <Style x:Key="TileToolTipStyle" x:Uid="Style_13" TargetType="{x:Type TextBlock}">
+        <Setter x:Uid="Setter_44" Property="FrameworkElement.MaxWidth" Value="300" />
+        <Setter x:Uid="Setter_45" Property="TextBlock.TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="TileMiddleStackPanelStyle" x:Uid="Style_14" TargetType="{x:Type StackPanel}">
+        <Setter x:Uid="Setter_46" Property="FrameworkElement.Margin" Value="8,2,0,0" />
+    </Style>
+    <Style x:Key="TileRightStackPanelStyle" x:Uid="Style_15" TargetType="{x:Type StackPanel}">
+        <Setter x:Uid="Setter_47" Property="FrameworkElement.Margin" Value="6,2,0,0" />
+        <Setter x:Uid="Setter_48" Property="FrameworkElement.VerticalAlignment" Value="Top" />
+        <Setter x:Uid="Setter_49" Property="FrameworkElement.HorizontalAlignment" Value="Right" />
+        <Setter x:Uid="Setter_50" Property="UIElement.Visibility" Value="Collapsed" />
+    </Style>
+    <Style x:Key="DetailButtonStyle" x:Uid="Style_3" TargetType="{x:Type Button}">
+        <Setter x:Uid="Setter_6" Property="FrameworkElement.MinWidth" Value="75" />
+        <Setter x:Uid="Setter_29" Property="FrameworkElement.MinHeight" Value="23" />
+        <Setter x:Uid="Setter_54" Property="Control.Padding" Value="10,1,10,1" />
+        <Setter x:Uid="Setter_55" Property="Control.VerticalContentAlignment" Value="Center" />
+        <Setter x:Uid="Setter_25" Property="FrameworkElement.Margin" Value="6,3" />
+        <Setter x:Uid="Setter_7" Property="ToolTipService.ShowOnDisabled" Value="true" />
+    </Style>
+    <Style x:Uid="Style_2" TargetType="{x:Type ui:TextBlockControl}">
+        <Style.Triggers>
+            <Trigger x:Uid="Trigger_1" Property="UIElement.IsEnabled" Value="false">
+                <Setter x:Uid="Setter_4" Property="TextElement.Foreground">
+                    <Setter.Value>
+                        <DynamicResource x:Uid="DynamicResource_1"
+                                         ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="DetailBorderStyle" x:Uid="Style_5" TargetType="{x:Type Border}">
+        <Setter x:Uid="Setter_14" Property="Border.BorderThickness" Value="0" />
+        <Setter x:Uid="Setter_15" Property="Border.BorderBrush" Value="DarkGray" />
+        <Setter x:Uid="Setter_16" Property="Border.CornerRadius" Value="2" />
+        <Setter x:Uid="Setter_17" Property="Border.Background" Value="#FFFAFAFA" />
+        <Setter x:Uid="Setter_18" Property="UIElement.Effect">
+            <Setter.Value>
+                <DropShadowEffect x:Uid="DropShadowEffect_1" Color="Black" Direction="320" ShadowDepth="4"
+                                  Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="DetailImageStyle" x:Uid="Style_16" TargetType="{x:Type Image}">
+        <Setter x:Uid="Setter_52" Property="FrameworkElement.Width" Value="200" />
+        <Setter x:Uid="Setter_53" Property="FrameworkElement.Height" Value="200" />
+    </Style>
+    <Style x:Key="DetailMetadataStyle" x:Uid="Style_8" TargetType="{x:Type StackPanel}">
+        <Setter x:Uid="Setter_21" Property="FrameworkElement.Margin" Value="0,3,0,0" />
+        <Setter x:Uid="Setter_22" Property="StackPanel.Orientation" Value="Horizontal" />
+    </Style>
+    <Style x:Key="DetailHyperlinkTextBlockStyle" x:Uid="Style_9" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_27" Property="FrameworkElement.Margin" Value="0,3,0,0" />
+    </Style>
+    <Style x:Key="DetailMetadataLabelStyle" x:Uid="Style_6" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_19" Property="TextBlock.FontWeight" Value="Bold" />
+        <Setter x:Uid="Setter_23" Property="FrameworkElement.Margin" Value="0,0,0,0" />
+    </Style>
+    <Style x:Key="DetailMetadataValueStyle" x:Uid="Style_7" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_20" Property="FrameworkElement.Margin" Value="3,0,0,0" />
+        <Setter x:Uid="Setter_51" Property="FrameworkElement.ToolTip">
+            <Setter.Value>
+                <ToolTip x:Uid="ToolTip_1"
+                         DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+                    <TextBlock x:Uid="TextBlock_1" Style="{StaticResource TileToolTipStyle}" Text="{Binding Text}" />
+                </ToolTip>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="DisabledExtensionStyle" x:Uid="Style_18" TargetType="{x:Type StackPanel}">
+        <Setter x:Uid="Setter_63" Property="FrameworkElement.Margin" Value="0,3,0,0" />
+        <Setter x:Uid="Setter_64" Property="StackPanel.Orientation" Value="Horizontal" />
+    </Style>
+    <Style x:Key="DisabledExtensionLabelStyle" x:Uid="Style_19" TargetType="{x:Type ui:TextBlockControl}">
+        <Setter x:Uid="Setter_62" Property="FrameworkElement.Margin" Value="0,0,0,0" />
+        <Setter x:Uid="Setter_66" Property="TextBlock.TextWrapping" Value="Wrap" />
+    </Style>
+    <shared:UriToBitmapImageConverter x:Key="uriToPreviewImageConverter" x:Uid="shared:UriToBitmapImageConverter_1" />
+    <shared:UriToBitmapImageConverter x:Key="uriToIconConverter" x:Uid="shared:UriToBitmapImageConverter_2" />
+    <BitmapImage x:Key="BitmapImage_DefaultIcon" x:Uid="BitmapImage_DefaultIcon"
+                 UriSource="pack://application:,,,/Microsoft.VisualStudio.ExtensionManager.Implementation;Component/UI/Icon.png" />
+    <BitmapImage x:Key="BitmapImage_DefaultPreviewImage" x:Uid="BitmapImage_DefaultPreviewImage"
+                 UriSource="pack://application:,,,/Microsoft.VisualStudio.ExtensionManager.Implementation;Component/UI/PreviewImage.png" />
+    <Style x:Key="DetailedCheckBoxStyle" x:Uid="Style_20" TargetType="{x:Type CheckBox}">
+        <Setter x:Uid="Setter_68" Property="FrameworkElement.Margin" Value="0,3,0,0" />
+        <Setter x:Uid="Setter_69" Property="Control.Foreground" Value="{DynamicResource VsBrush.ToolWindowText}" />
+    </Style>
+</ResourceDictionary>
